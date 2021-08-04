@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import entity_factories
+
 from render_order import RenderOrder
 from input_handlers import GameOverEventHandler
 import color
@@ -41,12 +43,19 @@ class Fighter(BaseComponent):
             death_message = f"{self.parent.name} is dead!"
             death_message_color = color.enemy_die
         
-        self.parent.char = "%"
-        self.parent.color = (191, 0, 0)
-        self.parent.blocks_movement = False
-        self.parent.ai = None
-        self.parent.name = f"remains of {self.parent.name}"
-        self.parent.render_order = RenderOrder.CORPSE
+        remains = entity_factories.remains_of.spawn(
+            self.engine.game_map,
+            self.parent.x,
+            self.parent.y
+        )
+        remains.name = f"Remains of {self.parent.name}"
+        self.engine.game_map.entities.remove(self.parent)
+        # self.parent.char = "%"
+        # self.parent.color = (191, 0, 0)
+        # self.parent.blocks_movement = False
+        # self.parent.ai = None
+        # self.parent.name = f"remains of {self.parent.name}"
+        # self.parent.render_order = RenderOrder.CORPSE
 
         self.engine.message_log.add_message(death_message, death_message_color)
     

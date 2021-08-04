@@ -3,7 +3,7 @@ from components.inventory import Inventory
 from components.ai import BaseAI, HostileEnemy
 from components import consumable
 from components.fighter import Fighter
-from entity import Actor, Item
+from entity import Actor, Item, Corpse
 
 player = Actor(
     char="@",
@@ -50,7 +50,14 @@ health_potion = Item(
     char="!",
     color=(127, 0, 255),
     name="Health Potion",
-    consumable=consumable.HealingConsumable(amount=4)
+    consumable=consumable.HealingConsumable(amount=5)
+)
+
+remains_of = Corpse(
+    char="%",
+    color=(191, 0, 0),
+    name="Remains of something",
+    consumable=consumable.HealingConsumable(amount=2)
 )
 
 lightning_scroll = Item(

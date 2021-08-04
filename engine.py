@@ -20,11 +20,15 @@ class Engine:
 
     game_map: GameMap
 
+    # How long the player has been playing
+    world_age: int
+
     def __init__(self, player: Actor):
         self.event_handler: EventHandler = MainGameEventHandler(self)
         self.message_log = MessageLog()
         self.mouse_location = (0, 0)
         self.player = player
+        self.world_age = 0
     
     def handle_enemy_turns(self) -> None:
         for actor in set(self.game_map.actors) - {self.player}:

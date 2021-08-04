@@ -77,7 +77,10 @@ class EventHandler(tcod.event.EventDispatch[Action]):
         self.engine = engine
     
     def handle_events(self, event: tcod.event.Event) -> None:
-        self.handle_action(self.dispatch(event))
+        advance_turn = self.handle_action(self.dispatch(event))
+        # Advance the age of the world
+        if advance_turn:
+            self.engine.world_age += 1
     
     def handle_action(self, action: Optional[Action]) -> bool:
         """Handle actions returned from event methods

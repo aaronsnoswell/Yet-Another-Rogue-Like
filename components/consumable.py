@@ -76,6 +76,7 @@ class ConfusionConsumable(Consumable):
 
 
 class HealingConsumable(Consumable):
+
     def __init__(self, amount: int):
         self.amount = amount
 
