@@ -1,3 +1,4 @@
+from numpy import number
 from components.inventory import Inventory
 from components.ai import BaseAI, HostileEnemy
 from components import consumable
@@ -29,6 +30,20 @@ troll = Actor(
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=16, defense=1, power=4),
     inventory=Inventory(capacity=0),
+)
+
+confusion_scroll = Item(
+    char="~",
+    color=(207, 63, 255),
+    name="Confusion Scroll",
+    consumable=consumable.ConfusionConsumable(number_of_turns=10)
+)
+
+fireball_scroll = Item(
+    char="~",
+    color=(255, 0, 0),
+    name="Fireball Scroll",
+    consumable=consumable.FireballDamageConsumable(damage=12, radius=3)
 )
 
 health_potion = Item(
