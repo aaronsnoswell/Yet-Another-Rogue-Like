@@ -171,5 +171,8 @@ class Corpse(Entity):
             render_order=RenderOrder.CORPSE
         )
 
+        # Must be set after initialisation
+        self.created_time = 0
+
         self.consumable = consumable
         self.consumable.parent = self

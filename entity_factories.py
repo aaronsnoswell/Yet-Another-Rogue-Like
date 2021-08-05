@@ -50,14 +50,14 @@ health_potion = Item(
     char="!",
     color=(127, 0, 255),
     name="Health Potion",
-    consumable=consumable.HealingConsumable(amount=5)
+    consumable=consumable.HealingConsumable(amount=6)
 )
 
 remains_of = Corpse(
     char="%",
     color=(191, 0, 0),
     name="Remains of something",
-    consumable=consumable.HealingConsumable(amount=2)
+    consumable=consumable.CorpseConsumable(amount=3, lifespan=20)
 )
 
 lightning_scroll = Item(

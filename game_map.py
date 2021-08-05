@@ -5,7 +5,7 @@ from typing import Iterable, Iterator, Optional, TYPE_CHECKING
 import numpy as np
 from tcod.console import Console
 
-from entity import Actor, Item
+from entity import Actor, Item, Corpse
 import tile_types
 
 if TYPE_CHECKING:
@@ -47,7 +47,7 @@ class GameMap:
     @property
     def items(self) -> Iterator[Actor]:
         """Iterate over this map's items"""
-        yield from (entity for entity in self.entities if isinstance(entity, Item))
+        yield from (entity for entity in self.entities if isinstance(entity, Item) or isinstance(entity, Corpse))
     
     def get_blocking_entity_at_location(self, location_x: int, location_y: int) -> Optional[Entity]:
         for entity in self.entities:

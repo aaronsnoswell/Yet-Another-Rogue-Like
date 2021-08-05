@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 
 
 class Consumable(BaseComponent):
+
     parent: Item
 
     def get_action(self, consumer: Actor) -> Optional[actions.Action]:
@@ -92,6 +93,34 @@ class HealingConsumable(Consumable):
             self.consume()
         else:
             raise Impossible(f"Your health is already full.")
+
+
+class CorpseConsumable(HealingConsumable):
+
+    def __init__(self, amount: int, lifespan: int):
+        self.amount = amount
+        self.lifespan = lifespan
+        print(self.lifespan)
+
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+
+        corpse_age = consumer.gamemap.engine.world_age - self.parent.created_time
+        if corpse_age > self.lifespan:
+            amount_lost = consumer.fighter.take_damage(self.amount * 2)
+            self.engine.message_log.add_message(
+                f"You consume the {self.parent.name}, but it tastes awful! You loose {amount_lost} HP!"
+            )
+        else:
+            amount_recovered = consumer.fighter.heal(self.amount)
+            if amount_recovered > 0:
+                self.engine.message_log.add_message(
+                    f"You consume the {self.parent.name}, and recover {amount_recovered} HP!",
+                    color.health_recovered,
+                )
+                self.consume()
+            else:
+                raise Impossible(f"Your health is already full.")
 
 
 class FireballDamageConsumable(Consumable):
