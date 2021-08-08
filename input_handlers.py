@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from typing import Callable, Optional, Tuple, TYPE_CHECKING, Union
 from numpy import log
 
@@ -95,6 +97,31 @@ class BaseEventHandler(tcod.event.EventDispatch[ActionOrHandler]):
         raise SystemExit()
 
 
+class PopupMessage(BaseEventHandler):
+    """Display a popup text window"""
+
+    def __init__(self, parent_handler: BaseEventHandler, text: str):
+        self.parent = parent_handler
+        self.text = text
+    
+    def on_render(self, console: tcod.Console) -> None:
+        """Render the parent and dim the result, then print the message on top"""
+        self.parent.on_render(console)
+        console.tiles_rgb["fg"] //= 8
+        console.tiles_rgb["bg"] //= 8
+
+        console.print(
+            console.width // 2,
+            console.height // 2,
+            self.text,
+            fg=color.white,
+            bg=color.black,
+            alignment=tcod.CENTER
+        )
+    
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[BaseEventHandler]:
+        """Any key returns to the parent handler"""
+        return self.parent
 
 
 class EventHandler(BaseEventHandler):
@@ -397,10 +424,19 @@ class MainGameEventHandler(EventHandler):
 
 
 class GameOverEventHandler(EventHandler):
+
+    def on_quit(self) -> None:
+        """Handle exiting out of a finished game"""
+        if os.path.exists("savegame.sav"):
+            os.remove("savegame.sav")
+        raise exceptions.QuitWithoutSaving()
+    
+    def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
+        self.on_quit()
     
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         if event.sym == tcod.event.K_ESCAPE:
-            raise SystemExit()
+            self.on_quit()
 
 
 class HistoryViewer(EventHandler):

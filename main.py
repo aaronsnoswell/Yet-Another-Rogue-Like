@@ -10,6 +10,13 @@ import input_handlers
 import setup_game
 
 
+def save_game(handler: input_handlers.BaseEventHandler, filename: str) -> None:
+    """If the current event handler has an active Engine, then save it"""
+    if isinstance(handler, input_handlers.EventHandler):
+        handler.engine.save_as(filename)
+        print("Game saved.")
+
+
 def main() -> None:
     screen_width = 80
     screen_height = 50
@@ -22,7 +29,7 @@ def main() -> None:
     )
 
     handler: input_handlers.BaseEventHandler = setup_game.MainMenu()
-    
+
     with tcod.context.new_terminal(
         screen_width,
         screen_height,
@@ -52,11 +59,11 @@ def main() -> None:
             raise
         except SystemExit:
             # Save and quit
-            # TODO add save function here
+            save_game(handler, "savegame.sav")
             raise
         except BaseException:
-            # Save an any other unexpected exception
-            # TODO add save function here
+            # Save on any other unexpected exception
+            save_game(handler, "savegame.sav")
             raise
 
 if __name__ == "__main__":
